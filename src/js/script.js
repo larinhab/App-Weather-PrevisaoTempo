@@ -1,5 +1,5 @@
-
 const input = document.getElementById('input-area');
+
 const apiKey = 'b71ca8cf27d815b6a140626bf29383e5';
 
 const clientId = "04fc25eb6b49484780e47ba7577ce2c8";
@@ -7,6 +7,8 @@ const clientSecret = "2f8cd6fd617d4d8aa2392ec281322205";
 
 const ulElement = document.querySelector('.playlist-box');
 const liElement = document.querySelectorAll('li');
+
+// VIDEOS BG --------------------------------------------------------------------
 
 const videoURLs = [
     '.src/assets/video/video1.mp4',
@@ -40,13 +42,11 @@ function reloadVideos() {
     }
 }
 
+// BUTTON --------------------------------------------------------------------
 
 function searchButton() {
     const inputValue = input.value;
-
-    console.log(input.value)
     movInput()
-
 }
 
 function closeInput() { 
@@ -76,9 +76,9 @@ function showEnvelope() {
 function movInput (inputValue) {
  const visibility = input.style.visibility;
 
- inputValue && searchCity(inputValue);
+    inputValue && searchCity(inputValue);
 
-visibility === 'hidden' ? openInput () : closeInput()
+    visibility === 'hidden' ? openInput () : closeInput()
 }
 
 input.addEventListener('keyup', function(event){
@@ -93,6 +93,7 @@ document.addEventListener('DOMContentLoaded', () => {
     reloadVideos();
 })
 
+// API WEATHER  --------------------------------------------------------------------
 
 async function searchCity(city) {
     try {
@@ -113,7 +114,7 @@ async function searchCity(city) {
     }
 
     }catch {
-        alert('Search gone wrong :(');
+        alert('The place name is not right');
     }
 }
 
@@ -124,6 +125,8 @@ function showClimeOnScreen(result) {
     document.querySelector('.max-temp').innerHTML = `máx:${result.main.temp_max.toFixed(0)}°C`;
     document.querySelector('.min-temp').innerHTML = `min:${result.main.temp_min.toFixed(0)}°C`;
 }
+
+// API SPOTIFY --------------------------------------------------------------------
 
  async function getAccessToken() {
     const credentials = `${clientId}:${clientSecret}`;
@@ -140,10 +143,10 @@ function showClimeOnScreen(result) {
 
     
     const data = await response.json()
-
-    return data.access_token;
     console.log(data);
+    return data.access_token;
 }
+
 
 // accessToken();
 
@@ -160,29 +163,29 @@ function getActualDate() {
 async function playTopAlbuns(country) {
     try {
         const accessToken = await getAccessToken();
-        const currentDate = getActualDate();
+        const currentDate = await getActualDate();
         const url = `https://api.spotify.com/v1/browse/featured-playlists?country=${country}&timestamp=${currentDate}T09%3A00%3A00&limit=3`
-    
+        
         const result = await fetch(`${url}`, {
             
-        headers: {
-            'Authorization': `Bearer ${accessToken}`
-        },
-      });
-    
-      if(result.status === 200) {
-        const data = await result.json()
-        const results = data.playlists.items.map(item => ({
-            name: item.name,
-            image: item.images[0].url
-        }))
-
-        showMusicOnScreen(result);
-
-    }else{
-        throw new Error
-    }
-      }catch{
+            headers: {
+                'Authorization': Bearer `${accessToken}`
+            },
+        });
+        
+        if(result.status === 200) {
+            const data = await result.json()
+            const results = data.playlists.items.map(item => ({
+                name: item.name,
+                image: item.images[0].url
+            }))
+            
+            showMusicOnScreen(result);
+            
+        }else{
+            throw new Error
+        }
+    }catch{
         alert('Music search gone wrong :(')
     }
 }
